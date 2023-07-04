@@ -1,0 +1,33 @@
+{
+  "name": "nextjs-openapi",
+  "version": "0.0.1",
+  "description": "Library to convert from NextJS classes and handlers to OpenAPI.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Code-Sorcerers-BR/nextjs-openapi.git"
+  },
+  "keywords": [
+    "openapi",
+    "nextjs"
+  ],
+  "author": "Code Sorcerers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Code-Sorcerers-BR/nextjs-openapi/issues"
+  },
+  "homepage": "https://github.com/Code-Sorcerers-BR/nextjs-openapi#readme",
+  "dependencies": {
+    "debug": "^4.3.4",
+    "minimatch": "^9.0.2",
+    "typescript": "^5.1.6"
+  }
+}
