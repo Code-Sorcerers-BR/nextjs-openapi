@@ -1,4 +1,4 @@
-import * as debug from 'debug';
+import { debug } from 'debug';
 import { minimatch } from 'minimatch';
 import * as ts from 'typescript';
 import { isDecorator } from '../utils/decoratorUtils';
@@ -22,6 +22,12 @@ export class MetadataGenerator {
         this.typeChecker = this.program.getTypeChecker();
         MetadataGenerator.current = this;
     }
+
+    // fetchNodesFromFiles
+    // fetchNodesDirectly
+    // fetchNodesFromCodeString
+
+    // On generate check if there is any node, if not alert to fetch some nodes before
 
     public generate(): Metadata {
         this.program.getSourceFiles().forEach(sf => {

@@ -1,11 +1,11 @@
 'use strict';
 
-import * as debug from 'debug';
-import * as _ from 'lodash';
+import { debug } from 'debug';
 import * as ts from 'typescript';
 import { getDecorators } from '../utils/decoratorUtils';
 import { ResponseType } from './metadataGenerator';
 import { resolveType } from './resolveType';
+import * as jsUtils from '../utils/jsUtils'
 
 export abstract class EndpointGenerator<T extends ts.Node> {
     protected node: T;
@@ -40,7 +40,7 @@ export abstract class EndpointGenerator<T extends ts.Node> {
 
         return securities.map(security => ({
             name: security[1] ? security[1] : 'default',
-            scopes: security[0] ? _.castArray(this.handleRolesArray(security[0])) : []
+            scopes: security[0] ? jsUtils.castArray(this.handleRolesArray(security[0])) : []
         }));
     }
 

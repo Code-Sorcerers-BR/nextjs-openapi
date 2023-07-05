@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import * as ts from 'typescript';
 import { getDecoratorName } from '../utils/decoratorUtils';
 import { getFirstMatchingJSDocTagName } from '../utils/jsDocUtils';
@@ -464,7 +463,7 @@ function getModelTypeProperties(node: any, genericTypes?: Array<ts.TypeNode>): A
                 if (aType.kind === ts.SyntaxKind.TypeReference && genericTypes && genericTypes.length && node.typeParameters) {
 
                     // The type definitions are conviently located on the object which allow us to map -> to the genericTypes
-                    const typeParams = _.map(node.typeParameters, (typeParam: ts.TypeParameterDeclaration) => {
+                    const typeParams = node.typeParameters.map((typeParam: ts.TypeParameterDeclaration) => {
                         return typeParam.name.text;
                     });
 
@@ -480,7 +479,7 @@ function getModelTypeProperties(node: any, genericTypes?: Array<ts.TypeNode>): A
                     }
 
                     // I could not produce a situation where this did not find it so its possible this check is irrelevant
-                    const indexOfType = _.indexOf<string>(typeParams, typeIdentifierName);
+                    const indexOfType = typeParams.indexOf(typeIdentifierName);
                     if (indexOfType >= 0) {
                         aType = genericTypes[indexOfType] as ts.TypeNode;
                     }
@@ -568,13 +567,13 @@ function getModelTypeAdditionalProperties(node: UsableDeclaration) {
     return undefined;
 }
 
-function hasPublicMemberModifier(node: ts.Node) {
+function hasPublicMemberModifier(node: ts.PropertySignature) {
     return !node.modifiers || node.modifiers.every(modifier => {
         return modifier.kind !== ts.SyntaxKind.ProtectedKeyword && modifier.kind !== ts.SyntaxKind.PrivateKeyword;
     });
 }
 
-function hasPublicConstructorModifier(node: ts.Node) {
+function hasPublicConstructorModifier(node: ts.ParameterDeclaration) {
     return node.modifiers && node.modifiers.some(modifier => {
         return modifier.kind === ts.SyntaxKind.PublicKeyword;
     });
