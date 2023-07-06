@@ -1,48 +1,36 @@
 import { debug } from 'debug';
-import { minimatch } from 'minimatch';
 import * as ts from 'typescript';
 import { isDecorator } from '../utils/decoratorUtils';
 import { ControllerGenerator } from './controllerGenerator';
+import { NodeReader } from './readers';
+
 
 export class MetadataGenerator {
     public static current: MetadataGenerator;
     public readonly nodes = new Array<ts.Node>();
+    public readonly program: ts.Program;
     public readonly typeChecker: ts.TypeChecker;
-    private readonly program: ts.Program;
     private referenceTypes: { [typeName: string]: ReferenceType } = {};
     private circularDependencyResolvers = new Array<(referenceTypes: { [typeName: string]: ReferenceType }) => void>();
     private debugger = debug('typescript-rest-swagger:metadata');
 
-    constructor(entryFile: string | Array<string>, compilerOptions: ts.CompilerOptions, private readonly  ignorePaths?: Array<string>) {
-        const sourceFiles = this.getSourceFiles(entryFile);
-        this.debugger('Starting Metadata Generator');
-        this.debugger('Source files: %j ', sourceFiles);
-        this.debugger('Compiler Options: %j ', compilerOptions);
-        this.program = ts.createProgram(sourceFiles, compilerOptions);
+    // constructor(entryFile: string | Array<string>, compilerOptions: ts.CompilerOptions, private readonly  ignorePaths?: Array<string>) {
+    //     const sourceFiles = this.getSourceFiles(entryFile);
+    //     this.debugger('Starting Metadata Generator');
+    //     this.debugger('Source files: %j ', sourceFiles);
+    //     this.debugger('Compiler Options: %j ', compilerOptions);
+    //     this.program = ts.createProgram(sourceFiles, compilerOptions);
+    //     this.typeChecker = this.program.getTypeChecker();
+    //     MetadataGenerator.current = this;
+    // }
+    constructor(nodeReader: NodeReader) {
+        this.program = nodeReader.program;
         this.typeChecker = this.program.getTypeChecker();
+        this.nodes = nodeReader.nodes;
         MetadataGenerator.current = this;
     }
 
-    // fetchNodesFromFiles
-    // fetchNodesDirectly
-    // fetchNodesFromCodeString
-
-    // On generate check if there is any node, if not alert to fetch some nodes before
-
     public generate(): Metadata {
-        this.program.getSourceFiles().forEach(sf => {
-            if (this.ignorePaths && this.ignorePaths.length) {
-                for (const path of this.ignorePaths) {
-                    if(!sf.fileName.includes('node_modules/typescript-rest/') && minimatch(sf.fileName, path)) {
-                        return;
-                    }
-                }
-            }
-
-            ts.forEachChild(sf, node => {
-                this.nodes.push(node);
-            });
-        });
 
         this.debugger('Building Metadata for controllers Generator');
         const controllers = this.buildControllers();
@@ -94,21 +82,6 @@ export class MetadataGenerator {
             return found[0];
         }
         return undefined;
-    }
-
-    private getSourceFiles(sourceFiles: string | Array<string>) {
-        // this.debugger('Getting source files from expressions');
-        // this.debugger('Source file patterns: %j ', sourceFiles);
-        // const sourceFilesExpressions = _.castArray(sourceFiles);
-        const result: Set<string> = new Set<string>();
-        // const options = { cwd: process.cwd() };
-        // sourceFilesExpressions.forEach(pattern => {
-        //     this.debugger('Searching pattern: %s with options: %j', pattern, options);
-        //     const matches = glob.sync(pattern, options);
-        //     matches.forEach(file => result.add(file));
-        // });
-
-        return Array.from(result);
     }
 
     private buildControllers() {

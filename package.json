@@ -27,11 +27,13 @@
   "homepage": "https://github.com/Code-Sorcerers-BR/nextjs-openapi#readme",
   "dependencies": {
     "debug": "^4.3.4",
+    "glob": "^10.3.1",
     "minimatch": "^9.0.2",
     "path": "^0.12.7",
     "typescript": "^5.1.6"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.8"
+    "@types/debug": "^4.1.8",
+    "@types/node": "^20.4.0"
   }
 }
